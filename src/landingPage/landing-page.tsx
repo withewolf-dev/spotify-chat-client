@@ -1,6 +1,22 @@
-import react from "react";
+import react, { useEffect } from "react";
+import { useQuery } from "react-query";
+import { apiClient } from "../utils/client";
 
 const LandingPage = () => {
+  const { isLoading, isError, data, error, refetch } = useQuery(
+    "spotify-auth",
+    async () => {
+      const data = apiClient.get("/auth/spotify/callback");
+      return data;
+    },
+    {
+      enabled: false,
+    }
+  );
+
+  console.log(error);
+  console.log(data);
+
   return (
     <div className="h-screen bg-black ">
       <div>
@@ -23,9 +39,14 @@ const LandingPage = () => {
           possesion, right? We are here to bridge the gap.
         </p>
         <div className="flex justify-center mt-28 md:mt-14 mb-12">
-          <button className="py-2 px-6 border font-semibold leading-1 text-center tracking-wide transition-all ease-in duration-75 outline-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed lg:flex  rounded leading-120 select-none mx-0 text-sm  text-gray-300 border-transparent bg-green-600 ">
-            login with spotify
-          </button>
+          {!isLoading && (
+            <a href="http://localhost:4000/auth/spotify/callback">
+              <button className="py-2 px-6 border font-semibold leading-1 text-center tracking-wide transition-all ease-in duration-75 outline-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed lg:flex  rounded leading-120 select-none mx-0 text-sm  text-gray-300 border-transparent bg-green-600 ">
+                login with spotify
+              </button>
+            </a>
+          )}
+          {isLoading && <p>Loading</p>}
         </div>
       </div>
     </div>
